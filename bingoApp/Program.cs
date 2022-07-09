@@ -3,23 +3,24 @@ using bingoApp.FileHandle;
 
 namespace bingoApp
 {
-    internal class Program
+    public class BingoClass
     {
-        static void Main(string[] args)
+        public static void CreateBingo(int n, string name)
         {
-            string p = @"C:\Users\tiarn\Desktop\Programing\bingoApp\bingoApp\Model\Bingo.csv";
-            
-            BingoSystem bingo = new BingoSystem(p, 5, 3, 5);
+            string p = @"C:\Users\tiarn\Desktop\Programing\bingoApp\Model\Bingo.csv";
+
+            BingoSystem bingo = new BingoSystem(p, n, 3, 5);
+            string[][,] strings = new string[bingo.Grid.Count][,];
 
             for (int i = 0; i < bingo.Grid.Count; i++)
             {
-                BingoGrid grid = bingo.Grid[i];
-                string p2 = $@"C:\Users\tiarn\Desktop\Programing\bingoApp\bingoApp\PDFOuputs\MadeBingo{i}.pdf";
-                PDFSystem pdf = new PDFSystem(grid.BingoSquares, p2);
+                strings[i] = bingo.Grid[i].BingoSquares;
             }
+            string p2 = $@"C:\Users\tiarn\Desktop\Programing\bingoApp\PDFOuputs\{name}.pdf";
+            PDFSystem pdf = new PDFSystem(strings, p2);
         }
 
-        private void PrintBingo()
+        public static void PrintBingo()
         {
             string p = @"C:\Users\tiarn\Desktop\Programing\bingoApp\bingoApp\Model\Bingo.csv";
             BingoSystem bingo = new BingoSystem(p, 1, 3, 5);
@@ -29,6 +30,29 @@ namespace bingoApp
                 Console.WriteLine(grid.outputGrid());
                 Console.WriteLine("\n");
             }
+        }
+    }
+
+
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Number of People");
+            dynamic nS = Console.ReadLine();
+            try
+            {
+                nS = Convert.ToInt32(nS);
+            }
+            catch 
+            {
+                throw new Exception("Invalid Input");
+            }
+            Console.WriteLine("FileName");
+            string path = Console.ReadLine();
+
+            BingoClass.CreateBingo(nS, path);
         }
     }
 }

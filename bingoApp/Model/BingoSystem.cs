@@ -12,6 +12,8 @@ namespace bingoApp.Model
         private List<BingoGrid> _grid;
         public List<BingoGrid> Grid => _grid;
 
+        
+
         /// <summary>
         /// Constructor of <see cref="BingoSystem"/>
         /// </summary>
