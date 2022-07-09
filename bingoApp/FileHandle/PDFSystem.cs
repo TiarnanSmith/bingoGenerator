@@ -19,8 +19,8 @@ namespace bingoApp.FileHandle
         /// <summary>
         /// One document, mutiple bingos
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="path"></param>
+        /// <param name="s">An <see cref="string[][,]"/> array of all of the bingo boards</param>
+        /// <param name="path">Path to save the PDF at</param>
         public PDFSystem(string[][,] s, string path)
         {
             _pdfDocument = new Document();
@@ -42,11 +42,10 @@ namespace bingoApp.FileHandle
 
 
         /// <summary>
-        /// Constructor for one Bingo per PDF
+        /// Creates one PDF per page
         /// </summary>
         /// <param name="s"></param>
         /// <param name="path"></param>
-        
         public PDFSystem(string[,] s, string path)
         {
             _pdfDocument = new Document();
@@ -57,6 +56,11 @@ namespace bingoApp.FileHandle
             renderer.Save(path);
         }
 
+        /// <summary>
+        /// Creates the title and grid of the bingo-board
+        /// </summary>
+        /// <param name="s">The string to put into the table</param>
+        /// <param name="section">The section to be added to</param>
         private void CreatePDF(string[,] s, Section section)
         {
             _pdfDocument.Info.Title = "Bingo";
@@ -93,6 +97,10 @@ namespace bingoApp.FileHandle
             table.Rows.Height = "30mm";
         }
 
+        /// <summary>
+        /// Creates a table and title (one per page)
+        /// </summary>
+        /// <param name="s">String to put in table</param>
         private void CreatePDF(string[,] s)
         {
             _pdfDocument.Info.Title = "Bingo";
@@ -133,8 +141,8 @@ namespace bingoApp.FileHandle
         /// <summary>
         /// Creates row in the centere of the table
         /// </summary>
-        /// <param name="table"></param>
-        /// <param name="s"></param>
+        /// <param name="table">The table to add the row to</param>
+        /// <param name="s">The value to add in each respective cell</param>
         /// <returns></returns>
         private Table CreateRow(Table table, string[] s)
         {

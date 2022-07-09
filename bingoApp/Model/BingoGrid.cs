@@ -14,6 +14,11 @@ namespace bingoApp.Model
 
         public string[,] BingoSquares => _bingoSquares;
 
+        /// <summary>
+        /// Constructor for the BingoGrid
+        /// </summary>
+        /// <param name="x">Width of board</param>
+        /// <param name="y">Height of board</param>
         public BingoGrid(int x, int y)
         {
             _bingoSquares = new string[x, y];
@@ -25,8 +30,8 @@ namespace bingoApp.Model
         /// <summary>
         /// Randomises the dictonary of BingoPhrases
         /// </summary>
-        /// <param name="toRandom"></param>
-        /// <returns></returns>
+        /// <param name="toRandom">The array to randomise</param>
+        /// <returns>A randomised array</returns>
         private string[] bingoRandomize(string[] toRandom)
         {
             string[] bingo = new string[toRandom.Length];
@@ -50,7 +55,9 @@ namespace bingoApp.Model
             return bingo;
         }
 
-
+        /// <summary>
+        /// Creates the bingo board
+        /// </summary>
         public void createBingo()
         {
             string[] consts = BingoConstants.BingoConst.Values.ToArray();
@@ -71,6 +78,10 @@ namespace bingoApp.Model
             
         }
 
+        /// <summary>
+        /// Tranposes the bingoboard into a string
+        /// </summary>
+        /// <returns>A array in a string form</returns>
         public string outputGrid()
         {
             string store = "";
