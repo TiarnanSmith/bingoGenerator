@@ -8,7 +8,10 @@ using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.DocumentObjectModel.Visitors;
 using MigraDoc.Rendering;
+using PdfSharp.Fonts;
+using System.Drawing;
 using PdfSharp.Pdf;
+
 
 namespace bingoApp.FileHandle
 {
@@ -27,41 +30,48 @@ namespace bingoApp.FileHandle
             _pdfDocument = new Document();
             _pdfDocument.ImagePath = @"Model\";
 
-            for (int i = 0; i < s.GetLength(0); i=i+2)
+
+
+
+
+            for (int i = 0; i < s.GetLength(0); i = i + 2)
             {
                 Section section = _pdfDocument.AddSection();
 
                 CreatePDF(s[i], section);
                 if (s.GetLength(0) > i + 1) // Two things on one page
                 {
-                    CreatePDF(s[i + 1], section);
+                    CreatePDF(s[i + 1], section); 
+                    if (i % 2 == 1)
                 }
+                //GlobalFontSettings.FontResolver = new FileFontResolver();
+                // Style style = _pdfDocument.Styles[StyleNames.Normal];
+                //style.Font.Name = "Century";
+
+
+
+                PdfDocumentRenderer renderer = new PdfDocumentRenderer();
+                renderer.Document = _pdfDocument;
+                renderer.RenderDocument();
+                renderer.Save(path);
             }
-
-
-            PdfDocumentRenderer renderer = new PdfDocumentRenderer();
-            renderer.Document = _pdfDocument;
-
-            renderer.RenderDocument();
-            renderer.Save(path);
         }
+
 
         /// <summary>
         /// Creates the title and grid of the bingo-board
         /// </summary>
         /// <param name="s">The string to put into the table</param>
         /// <param name="section">The section to be added to</param>
+        /// <param name="loc">Location of image top or bottom</param>
         private void CreatePDF(string[,] s, Section section)
         {
             _pdfDocument.Info.Title = "Bingo";
 
-            string imagePath = @"Model\LiterificQuiz.jpg";
-
-            
             section.PageSetup.TopMargin = 1;
             section.PageSetup.BottomMargin = 1;
 
-
+            string imagePath = @"Model\LiterificQuiz.jpg";
 
             if (!File.Exists(imagePath))
             {
@@ -71,15 +81,16 @@ namespace bingoApp.FileHandle
             Image image = section.AddImage(imagePath);
             image.ScaleWidth = 0.25;
             image.ScaleHeight = 0.25;
-            image.Top = ShapePosition.Top;
             image.Left = ShapePosition.Left;
             image.RelativeHorizontal = RelativeHorizontal.Page;
-            image.RelativeVertical = RelativeVertical.Page;
-            image.WrapFormat.Style = WrapStyle.None;
+            image.RelativeVertical = RelativeVertical.Paragraph;
+            image.WrapFormat.Style = WrapStyle.Through;
+            image.Top = ShapePosition.Top;
+
+
 
             Paragraph text = section.AddParagraph();
             text.AddText("The Literific");
-            //text.Format.Font.Name = "Century Gothic";
             
 
 
