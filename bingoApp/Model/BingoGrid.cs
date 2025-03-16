@@ -28,7 +28,7 @@ namespace bingoApp.Model
         }
 
         /// <summary>
-        /// Randomises the dictonary of BingoPhrases
+        /// Randomises the dictionary of BingoPhrases
         /// </summary>
         /// <param name="toRandom">The array to randomise</param>
         /// <returns>A randomised array</returns>

@@ -14,8 +14,6 @@ namespace bingoApp.FileHandle
         private Document _pdfDocument;
         public Document PDFDocument => _pdfDocument;
 
-
-
         /// <summary>
         /// One document, mutiple bingos
         /// </summary>
@@ -28,14 +26,20 @@ namespace bingoApp.FileHandle
             for (int i = 0; i < s.GetLength(0); i=i+2)
             {
                 Section section = _pdfDocument.AddSection();
+
                 CreatePDF(s[i], section);
                 if (s.GetLength(0) > i + 1) // Two things on one page
                 {
                     CreatePDF(s[i + 1], section);
                 }
             }
+            _pdfDocument.DefaultPageSetup.TopMargin = 1;
+            _pdfDocument.DefaultPageSetup.BottomMargin = 1;
+            _pdfDocument.DefaultPageSetup.ba
+
             PdfDocumentRenderer renderer = new PdfDocumentRenderer();
             renderer.Document = _pdfDocument;
+
             renderer.RenderDocument();
             renderer.Save(path);
         }
@@ -44,6 +48,7 @@ namespace bingoApp.FileHandle
         /// <summary>
         /// Creates one PDF per page
         /// </summary>
+        /// <remarks>[REDUNDANT]</remarks>
         /// <param name="s"></param>
         /// <param name="path"></param>
         public PDFSystem(string[,] s, string path)
@@ -66,7 +71,7 @@ namespace bingoApp.FileHandle
             _pdfDocument.Info.Title = "Bingo";
             
             Paragraph text = section.AddParagraph();
-            text.AddText("Awards Bingo");
+            text.AddText("The Literific");
             text.Format.Font.Name = "Century Gothic";
             text.Format.Alignment = ParagraphAlignment.Center;
             text.Format.Font.Size = 16;
@@ -75,16 +80,18 @@ namespace bingoApp.FileHandle
             text.Format.Font.Bold = true;
 
             Table table = section.AddTable();
-            table.AddColumn("50mm");
-            table.AddColumn("50mm");
-            table.AddColumn("50mm");
-            table.Borders.Width = 0.25;
+            table.AddColumn("25mm");
+            table.AddColumn("25mm");
+            table.AddColumn("25mm");
+            table.AddColumn("25mm");
+            table.AddColumn("25mm");
+            table.Borders.Width = 0.1;
 
             string[][] ss = new string[s.GetLength(0)][];
 
             for (int i = 0; i < s.GetLength(0); i++)
             {
-                ss[i] = new string[3] { s[i, 0], s[i, 1], s[i, 2], };
+                ss[i] = new string[5] { s[i, 0], s[i, 1], s[i, 2], s[i, 3], s[i, 4]};
             }
 
             for (int i = 0; i < ss.Length; i++)
@@ -94,12 +101,15 @@ namespace bingoApp.FileHandle
 
             // Aligns table to the center
             table.Rows.Alignment = RowAlignment.Center;
-            table.Rows.Height = "30mm";
+            table.Rows.Height = "25mm";
         }
 
+
+
         /// <summary>
-        /// Creates a table and title (one per page)
+        /// Creates a table and title (one per page) 
         /// </summary>
+        /// <remarks>[REDUNDANT]</remarks>
         /// <param name="s">String to put in table</param>
         private void CreatePDF(string[,] s)
         {
@@ -114,7 +124,7 @@ namespace bingoApp.FileHandle
             text.Format.Font.Size = 16;
             text.Format.Font.Bold = true;
 
-
+            // Bad programing
             Table table = section.AddTable();
             table.AddColumn("50mm");
             table.AddColumn("50mm");
@@ -125,7 +135,7 @@ namespace bingoApp.FileHandle
 
             for (int i = 0; i < s.GetLength(0); i++)
             {
-                ss[i] = new string[3] { s[i,0], s[i,1], s[i,2], };
+                ss[i] = new string[3] { s[i,0], s[i,1], s[i,2] };
             }
            
             for (int i =0; i < ss.Length; i++)
@@ -133,13 +143,13 @@ namespace bingoApp.FileHandle
                 CreateRow(table, ss[i]);
             }
 
-            // Aligns table to the center
+            // Aligns table to the centre
             table.Rows.Alignment = RowAlignment.Center;
             table.Rows.Height = "30mm";
         }
 
         /// <summary>
-        /// Creates row in the centere of the table
+        /// Creates row in the centre of the table
         /// </summary>
         /// <param name="table">The table to add the row to</param>
         /// <param name="s">The value to add in each respective cell</param>
