@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
+using MigraDoc.DocumentObjectModel.Visitors;
 using MigraDoc.Rendering;
+using PdfSharp.Pdf;
 
 namespace bingoApp.FileHandle
 {
@@ -22,7 +25,8 @@ namespace bingoApp.FileHandle
         public PDFSystem(string[][,] s, string path)
         {
             _pdfDocument = new Document();
-            
+            _pdfDocument.ImagePath = @"Model\";
+
             for (int i = 0; i < s.GetLength(0); i=i+2)
             {
                 Section section = _pdfDocument.AddSection();
@@ -33,30 +37,11 @@ namespace bingoApp.FileHandle
                     CreatePDF(s[i + 1], section);
                 }
             }
-            _pdfDocument.DefaultPageSetup.TopMargin = 1;
-            _pdfDocument.DefaultPageSetup.BottomMargin = 1;
-            _pdfDocument.DefaultPageSetup.ba
+
 
             PdfDocumentRenderer renderer = new PdfDocumentRenderer();
             renderer.Document = _pdfDocument;
 
-            renderer.RenderDocument();
-            renderer.Save(path);
-        }
-
-
-        /// <summary>
-        /// Creates one PDF per page
-        /// </summary>
-        /// <remarks>[REDUNDANT]</remarks>
-        /// <param name="s"></param>
-        /// <param name="path"></param>
-        public PDFSystem(string[,] s, string path)
-        {
-            _pdfDocument = new Document();
-            CreatePDF(s);
-            PdfDocumentRenderer renderer = new PdfDocumentRenderer();
-            renderer.Document = _pdfDocument;
             renderer.RenderDocument();
             renderer.Save(path);
         }
@@ -69,14 +54,37 @@ namespace bingoApp.FileHandle
         private void CreatePDF(string[,] s, Section section)
         {
             _pdfDocument.Info.Title = "Bingo";
+
+            string imagePath = @"Model\LiterificQuiz.jpg";
+
             
+            section.PageSetup.TopMargin = 1;
+            section.PageSetup.BottomMargin = 1;
+
+
+
+            if (!File.Exists(imagePath))
+            {
+                throw new FileNotFoundException("Image not found", imagePath);
+            }
+
+            Image image = section.AddImage(imagePath);
+            image.ScaleWidth = 0.25;
+            image.ScaleHeight = 0.25;
+            image.Top = ShapePosition.Top;
+            image.Left = ShapePosition.Left;
+            image.RelativeHorizontal = RelativeHorizontal.Page;
+            image.RelativeVertical = RelativeVertical.Page;
+            image.WrapFormat.Style = WrapStyle.None;
+
             Paragraph text = section.AddParagraph();
             text.AddText("The Literific");
-            text.Format.Font.Name = "Century Gothic";
+            //text.Format.Font.Name = "Century Gothic";
+            
+
+
             text.Format.Alignment = ParagraphAlignment.Center;
             text.Format.Font.Size = 16;
-            text.Format._spaceBefore.Centimeter = 1;
-            text.Format._spaceAfter.Centimeter = 0.25;
             text.Format.Font.Bold = true;
 
             Table table = section.AddTable();
@@ -106,47 +114,6 @@ namespace bingoApp.FileHandle
 
 
 
-        /// <summary>
-        /// Creates a table and title (one per page) 
-        /// </summary>
-        /// <remarks>[REDUNDANT]</remarks>
-        /// <param name="s">String to put in table</param>
-        private void CreatePDF(string[,] s)
-        {
-            _pdfDocument.Info.Title = "Bingo";
-            
-            Section section = _pdfDocument.AddSection();
-            Paragraph text = section.AddParagraph();
-            text.AddText("Awards Bingo");
-            text.Format.Font.Name = "Century Gothic";
-            text.Format.Alignment = ParagraphAlignment.Center;
-            text.Format._spaceAfter.Centimeter = 1;
-            text.Format.Font.Size = 16;
-            text.Format.Font.Bold = true;
-
-            // Bad programing
-            Table table = section.AddTable();
-            table.AddColumn("50mm");
-            table.AddColumn("50mm");
-            table.AddColumn("50mm");
-            table.Borders.Width = 0.25;
-
-            string[][] ss = new string[s.GetLength(0)][];
-
-            for (int i = 0; i < s.GetLength(0); i++)
-            {
-                ss[i] = new string[3] { s[i,0], s[i,1], s[i,2] };
-            }
-           
-            for (int i =0; i < ss.Length; i++)
-            {
-                CreateRow(table, ss[i]);
-            }
-
-            // Aligns table to the centre
-            table.Rows.Alignment = RowAlignment.Center;
-            table.Rows.Height = "30mm";
-        }
 
         /// <summary>
         /// Creates row in the centre of the table
@@ -162,7 +129,7 @@ namespace bingoApp.FileHandle
                 row.Cells[i].AddParagraph(s[i]);
                 row.Cells[i].VerticalAlignment = VerticalAlignment.Center;
                 row.Cells[i].Format.Alignment = ParagraphAlignment.Center;
-                row.Format.Font.Name = "Century Gothic";
+                //row.Format.Font.Name = "Century Gothic";
             }
 
             return table;
