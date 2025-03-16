@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/bingoApp/Model/Bingo.csv
+/bingoApp/PDFOuputs/2.pdf
+/bingoApp/PDFOuputs/TestPDF.pdf
+/bingoApp/PDFOuputs/TestFile.pdf
